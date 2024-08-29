@@ -8,9 +8,11 @@ class Rect {
         this.red = red;
         this.green = green;
         this.blue = blue;
+        this.score = 0;
     }
 
     draw(){
-
+        fill(this.red, this.green, this.blue, 255);
+        rect(this.x, this.y, this.width, this.height);
     }
 }
