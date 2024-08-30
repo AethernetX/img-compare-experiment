@@ -14,6 +14,8 @@ class Rect {
     }
 
     useGene(gene){
+        if(gene == undefined){ throw new console.error("undefined gene"); }
+
         if(gene.length < 7) {
             throw new console.error("faulty gene: gene length is too short / long"); 
         }
@@ -35,9 +37,9 @@ class Rect {
     }
 
     //the gene sharing rate is 50:50
-    crossover(rect1, rect2){
+    static crossover(rect1, rect2){
         let childGene = [];
-        for(let i = 0; i < rect1.gene.length; i++){
+        for(let i = 0; i < 7; i++){
             if(random() > 0.5){
                 childGene.push(rect1.gene[i]);
             } else {
@@ -53,7 +55,7 @@ class Rect {
 
         for(let i = 0; i < mutGene.length; i++){
             if(random() < chance){
-                mutGene[i] += random(-1, 1);
+                mutGene[i] += random(-5, 5);
             }
         }
 
@@ -65,13 +67,13 @@ class Rect {
         this.green  = mutGene[5]; 
         this.blue   = mutGene[6]; 
 
-        this.x      = constrain(mutatedRect.x, 0, img.width);
-        this.y      = constrain(mutatedRect.y, 0, img.height);
-        this.width  = constrain(mutatedRect.width, mutatedRect.x, img.width);
-        this.height = constrain(mutatedRect.height, mutatedRect.y, img.height);
-        this.red    = constrain(mutatedRect.red, 0, 255);
-        this.green  = constrain(mutatedRect.green, 0, 255);
-        this.blue   = constrain(mutatedRect.blue, 0, 255);
+        this.x      = constrain(mutGene.x, 0, img.width);
+        this.y      = constrain(mutGene.y, 0, img.height);
+        this.width  = constrain(mutGene.width, mutGene.x, img.width);
+        this.height = constrain(mutGene.height, mutGene.y, img.height);
+        this.red    = constrain(mutGene.red, 0, 255);
+        this.green  = constrain(mutGene.green, 0, 255);
+        this.blue   = constrain(mutGene.blue, 0, 255);
 
         this.width  = floor(this.width);
         this.height = floor(this.height);

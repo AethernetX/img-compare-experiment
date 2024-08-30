@@ -20,7 +20,7 @@ Steps to do genetic algorithm
 
 */
 
-const mutation = 0.01;
+const mutation = 0.1;
 
 let img;
 let finalArray = [];
@@ -62,82 +62,115 @@ function setup() {
     blendMode(DIFFERENCE);
     noStroke();
 
-    //step 1
-    let population = [];
+    //iterating all rectangles
+    for(let g = 0; g < 100; g++){
 
-    for(let i = 0; i < 20; i++){
-        let x = random(0, width);
-        let y = random(0, height);
-        let w = random(x, width);
-        let h = random(y, height);
+        //step 1
+        let population = [];
 
-        x = floor(x);
-        y = floor(y);
-        w = floor(w);
-        h = floor(h);
+        //generate population
+        for(let i = 0; i < 50; i++){
+            let x = random(0, width);
+            let y = random(0, height);
+            let w = random(x, width);
+            let h = random(y, height);
 
-        //get colour average said area
-        let avg = getColourAvg(x,y,w,h);
+            x = floor(x);
+            y = floor(y);
+            w = floor(w);
+            h = floor(h);
 
-        population.push(new Rect(w,h,x,y,avg[0],avg[1],avg[2]));
-    }
+            //get colour average said area
+            let avg = getColourAvg(x,y,w,h);
 
-
-    for(let i = 0; i < population.length; i++){
-
-        let score = 0;
-
-        image(img, 0, 0);
-
-        population[i].draw();
-
-        loadPixels();
-
-        for(let i = 0; i < width; i++){
-            for(let j = 0; j < height; j++){
-                let r = pixels[(i + j * width) * 4];
-                let g = pixels[(i + j * width) * 4 + 1];
-                let b = pixels[(i + j * width) * 4 + 2];
-
-                score += r + g + b;
-            }
+            population.push(new Rect(w,h,x,y,avg[0],avg[1],avg[2]));
         }
 
-        updatePixels();
+        //iterating 1 rectangle
+        for(let h = 0; h < 100; h++) {
+
+            //step 2
+            for(let i = 0; i < population.length; i++){
+
+                let score = 0;
+
+                image(img, 0, 0);
+
+                for(let j = 0; j < finalArray.length; j++){
+                    finalArray[j].draw();
+                }
+
+                population[i].draw();
+
+                loadPixels();
+
+                for(let x = 0; x < width; x++){
+                    for(let y = 0; y < height; y++){
+                        let r = pixels[(x + y * width) * 4];
+                        let g = pixels[(x + y * width) * 4 + 1];
+                        let b = pixels[(x + y * width) * 4 + 2];
+
+                        score += r + g + b;
+                    }
+                }
+
+                updatePixels();
         
-        population[i].score = score;
+                population[i].score = score;
     
-        clear();
+                clear();
+            }
+
+            // lower the score the better!
+            population.sort((a,b) => {
+                if(a.score > b.score){
+                    return 1;
+                } else if (a.score == b.score) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            });
+
+            //step 3
+
+            //since I cba to properly choose parents, I'll just randomly pick pairs
+            //this might end up causing some pitfalls along the way 
+            //if so, we can come back to this and improve the selection
+    
+            population.splice(5,population.length - 5);
+
+            for(let i = 0; i < 45; i++){
+                let newRect = new Rect(0,0,0,0,0,0,0);
+
+                let x = floor(random(0,5));
+                let y = floor(random(0,5));
+
+                if(x == y) {
+                    y++;
+                    y %= 4;
+                }
+
+                newRect.useGene(Rect.crossover(population[x], population[y]));
+                newRect.mutate(mutation);
+                population.push(newRect);
+            }
+
+            console.log("rect: " + g + " gen: " +  h);
+
+        } 
+
+        finalArray.push(population[0]);
     }
-
-    population.sort((a,b) => {
-        if(a.score < b.score){
-            return 1;
-        } else if (a.score == b.score) {
-            return 0;
-        } else {
-            return -1;
-        }
-    })
-
-    for(let i = 0; i < population.length; i++){
-        console.log(population[i].score);
-    }
-
-    finalArray = population;
 
     blendMode(BLEND);
 
     for(let i = 0; i < finalArray.length; i++){
         finalArray[i].draw();
     }
-}
 
-function draw() {
-    //sky blue background
-    //background(135, 206, 235);
+    //for(let i = 0; i < finalArray.length; i++){
+        //finalArray[i].draw();
+    //}
     
-    
-
-    //image(img, 0, 0);
 }
