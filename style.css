@@ -6,3 +6,10 @@ canvas {
     border: 5px;
     border-color: aliceblue;
 }
+
+div {
+    font: 400;
+    font-family: monospace;
+    color: white;
+    font-size: large;
+}

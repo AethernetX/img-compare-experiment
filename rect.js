@@ -1,86 +1,71 @@
 class Rect {
-    //todo: implement rotation
-    constructor(width, height, x, y, red, green, blue) {
-        this.width = width;
-        this.height = height;
-        this.x = x;
-        this.y = y;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.score = 0;
+    constructor() {
+        this.x = random(0, img.width - 20);
+        this.y = random(0, img.height - 20);
 
-        this.gene = [width, height, x, y, red, green, blue];
+        this.width = random(this.x, img.width);
+        this.height = random(this.y, img.height);
+       
+        this.theta = random(0, PI);
+
+        this.red = random(255);
+        this.green = random(255);
+        this.blue = random(255);
+        this.alpha = random(255);
     }
 
-    useGene(gene){
-        if(gene == undefined){ throw new console.error("undefined gene"); }
+    draw(context){
+        context.push(); 
+        context.fill(this.red, this.green, this.blue, this.alpha);
+        context.translate(this.x, this.y);
+        context.rotate(this.theta);
+        context.rect(0, 0, this.width, this.height);
+        context.pop();
+    }
 
-        if(gene.length < 7) {
-            throw new console.error("faulty gene: gene length is too short / long"); 
+    mutate(){
+        let r = random();
+        let tweak = random(-0.1, 0.1);
+         if(r > 0 && r <= 0.1){
+            this.x += tweak;
+        } else if(r > 0.1 && r <= 0.2){
+            this.y += tweak;
+        } else if(r > 0.2 && r <= 0.3){
+            this.width += tweak;
+        } else if(r > 0.3 && r <= 0.4){
+            this.height += tweak;
+        } else if(r > 0.4 && r <= 0.5){
+            this.theta += tweak;
+        } else if(r > 0.5 && r <= 0.6){
+            this.red += tweak;
+        } else if(r > 0.6 && r <= 0.7){
+            this.green += tweak;
+        } else if(r > 0.7 && r <= 0.8){
+            this.blue += tweak;
+        } else if(r > 0.8 && r <= 0.9){
+            this.alpha += tweak;
+        } else {
+            //this.x = random(0, img.width - 20);
+            //this.y = random(0, img.height - 20);
+
+            //this.width = random(this.x, img.width);
+            //this.height = random(this.y, img.height);
+       
+            //this.theta = random(0, PI);
+
+            //this.red = random(255);
+            //this.green = random(255);
+            //this.blue = random(255);
+            //this.alpha = random(255);
         }
 
-        this.width  = gene[0]; 
-        this.height = gene[1]; 
-        this.x      = gene[2]; 
-        this.y      = gene[3]; 
-        this.red    = gene[4]; 
-        this.green  = gene[5]; 
-        this.blue   = gene[6]; 
-
-        this.gene = gene;
-    }
-
-    draw(){
-        fill(this.red, this.green, this.blue, 255);
-        rect(this.x, this.y, this.width, this.height);
-    }
-
-    //the gene sharing rate is 50:50
-    static crossover(rect1, rect2){
-        let childGene = [];
-        for(let i = 0; i < 7; i++){
-            if(random() > 0.5){
-                childGene.push(rect1.gene[i]);
-            } else {
-                childGene.push(rect2.gene[i]);
-            }
-        }
-
-        return childGene;
-    }
-
-    mutate(chance){
-        let mutGene = this.gene;
-
-        for(let i = 0; i < mutGene.length; i++){
-            if(random() < chance){
-                mutGene[i] += random(-5, 5);
-            }
-        }
-
-        this.width  = mutGene[0]; 
-        this.height = mutGene[1]; 
-        this.x      = mutGene[2]; 
-        this.y      = mutGene[3]; 
-        this.red    = mutGene[4]; 
-        this.green  = mutGene[5]; 
-        this.blue   = mutGene[6]; 
-
-        this.x      = constrain(mutGene.x, 0, img.width);
-        this.y      = constrain(mutGene.y, 0, img.height);
-        this.width  = constrain(mutGene.width, mutGene.x, img.width);
-        this.height = constrain(mutGene.height, mutGene.y, img.height);
-        this.red    = constrain(mutGene.red, 0, 255);
-        this.green  = constrain(mutGene.green, 0, 255);
-        this.blue   = constrain(mutGene.blue, 0, 255);
-
-        this.width  = floor(this.width);
-        this.height = floor(this.height);
-        this.x      = floor(this.x);
-        this.y      = floor(this.y);
-        this.red    = floor(this.red);
-        this.green  = floor(this.green);
-        this.blue   = floor(this.blue);
+        this.x      = constrain(this.x, 0, img.width);
+        this.y      = constrain(this.y, 0, img.height);
+        this.width  = constrain(this.width, this.x, img.width);
+        this.height = constrain(this.height, this.y, img.height);
+        this.red    = constrain(this.red, 0, 255);
+        this.green  = constrain(this.green, 0, 255);
+        this.blue   = constrain(this.blue, 0, 255);
+        this.theta  %= PI;
     }
 }
