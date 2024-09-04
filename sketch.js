@@ -49,12 +49,14 @@ function preload() {
 function setup() {
 
     noStroke();
-    rectMode(CENTER);
 
     createCanvas(img.width, img.height);
     ctx = createGraphics(width, height);
     hiddenCtx = createGraphics(width, height);
 
+    ctx.rectMode(CENTER);
+    hiddenCtx.rectMode(CENTER);
+    
     highest = createDiv("waiting...");
     lowest = createDiv("waiting...")
     gen = createDiv("waiting...");
@@ -77,7 +79,7 @@ function draw(){
     ctx.clear();
     population.drawWinner();
     image(ctx, 0, 0);
-    population.evaluate(0.5);
+    population.evaluate(0.7);
     population.naturalSelection();
     population.generate();
     //noLoop();
